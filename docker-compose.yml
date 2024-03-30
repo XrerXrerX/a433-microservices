@@ -1,0 +1,20 @@
+version: "3.7"
+
+services:
+
+  item-app:
+    image: item-app
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - item-db
+
+  item-db:
+    image: mongo:3
+    restart: always
+    volumes:
+      - app-db:/data/db
+
+volumes:
+  app-db:
