@@ -1,0 +1,9 @@
+version: "3.7"
+
+services:
+
+  backend:
+    image: xrerxrerx/karsajobs:latest
+    restart: always
+    ports:
+      - "90:8080"
