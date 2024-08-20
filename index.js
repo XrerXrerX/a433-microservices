@@ -7,12 +7,13 @@ const bp = require("body-parser");
 app.use(bp.json());
 
 const amqp = require("amqplib");
-const amqpServer = process.env.AMQP_URL;
+const amqpServer = process.env.AMQP_URL || 'amqp://guest:guest@rabbitmq:5672';
 var channel, connection;
 
 connectToQueue();
 
 async function connectToQueue() {
+    console.log(amqpServer);
     connection = await amqp.connect(amqpServer);
     channel = await connection.createChannel();
     try {
@@ -34,13 +35,14 @@ const createOrder = async order => {
     const queue = "order";
     await channel.sendToQueue(queue, Buffer.from(JSON.stringify(order)));
     console.log("Order succesfully created!")
-    process.once('SIGINT', async () => { 
+    process.once('SIGINT', async () => {
         console.log('got sigint, closing connection');
         await channel.close();
-        await connection.close(); 
+        await connection.close();
         process.exit(0);
     });
 };
+
 
 app.listen(process.env.PORT, () => {
     console.log(`Server running at ${process.env.PORT}`);
